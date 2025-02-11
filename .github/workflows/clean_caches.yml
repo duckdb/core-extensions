@@ -27,12 +27,12 @@ jobs:
       - name: Deploy
         shell: bash
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.DUCKDB_COMMUNITY_EXTENSION_S3_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.DUCKDB_COMMUNITY_EXTENSION_S3_SECRET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.S3_DUCKDB_ORG_DEPLOY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_DUCKDB_ORG_DEPLOY_KEY }}
           AWS_DEFAULT_REGION: ${{ secrets.S3_DUCKDB_ORG_REGION }}
           CLOUDFLARE_CACHE_PURGE_TOKEN: ${{ secrets.CLOUDFLARE_CACHE_PURGE_TOKEN }}
           PATTERN: "${{ inputs.pattern }}"
           DUCKDB_CLEAN_CACHES_SCRIPT_MODE: for_real
         run: |
-          bash ./scripts/clean_caches.sh duckdb-community-extensions community-extensions "$PATTERN"
+          bash ./scripts/clean_caches.sh duckdb-extensions core-extensions "$PATTERN"
 

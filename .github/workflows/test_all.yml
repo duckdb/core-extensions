@@ -10,7 +10,7 @@ on:
 jobs:
   collect_extensions:
     outputs:
-      COMMUNITY_EXTENSION_LIST: ${{ steps.generate_list.outputs.EXTENSION_LIST }}
+      CORE_EXTENSION_LIST: ${{ steps.generate_list.outputs.EXTENSION_LIST }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -30,7 +30,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        extension_name: ${{ fromJson(needs.collect_extensions.outputs.COMMUNITY_EXTENSION_LIST) }}
+        extension_name: ${{ fromJson(needs.collect_extensions.outputs.CORE_EXTENSION_LIST) }}
     uses: ./.github/workflows/build.yml 
     with:
       extension_name: ${{ matrix.extension_name }}
