@@ -121,7 +121,7 @@ jobs:
           AWS_DEFAULT_REGION: ${{ secrets.S3_DUCKDB_ORG_REGION }}
           BUCKET_NAME: duckdb-extensions
           DUCKDB_EXTENSION_SIGNING_PK: ${{ secrets.S3_DUCKDB_ORG_EXTENSION_SIGNING_PK }}
-          DUCKDB_DEPLOY_SCRIPT_MODE: for_real
+          DUCKDB_DEPLOY_SCRIPT_MODE: test
           PIP_BREAK_SYSTEM_PACKAGES: 1
         run: |
           pwd
