@@ -1,4 +1,4 @@
-name: Community Extension with latest DuckDB
+name: Core Extension with latest DuckDB
 on:
   pull_request:
     paths-ignore:

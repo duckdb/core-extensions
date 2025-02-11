@@ -1,4 +1,4 @@
-name: Community Extension Generate Docs
+name: Core Extension Generate Docs
 on:
   workflow_dispatch:
     inputs:
