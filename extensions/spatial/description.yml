@@ -1,0 +1,13 @@
+extension:
+  name: spatial
+  description: Spatial extension for DuckDB
+  version: 0.0.1
+  language: C++
+  build: cmake
+  license: MIT
+  maintainers:
+    - duckdb
+
+repo:
+  github: duckdb/duckdb-spatial
+  ref: 6b3d93c3ef6bffa7b2453963ef438fc5bb9536e1
