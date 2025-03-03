@@ -116,8 +116,8 @@ jobs:
       - name: Deploy
         shell: bash
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.S3_DUCKDB_ORG_DEPLOY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_DUCKDB_ORG_DEPLOY_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.DUCKDB_CORE_EXTENSION_S3_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.DUCKDB_CORE_EXTENSION_S3_KEY }}
           AWS_DEFAULT_REGION: ${{ secrets.S3_DUCKDB_ORG_REGION }}
           BUCKET_NAME: duckdb-extensions
           DUCKDB_EXTENSION_SIGNING_PK: ${{ secrets.S3_DUCKDB_ORG_EXTENSION_SIGNING_PK }}
