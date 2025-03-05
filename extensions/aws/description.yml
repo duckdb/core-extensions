@@ -1,0 +1,13 @@
+extension:
+  name: aws
+  description: AWS extension for DuckDB
+  version: 0.0.1
+  language: C++
+  build: cmake
+  license: MIT
+  maintainers:
+    - duckdb
+
+repo:
+  github: duckdb/duckdb-aws
+  ref: e5a6236ecd36d6ea8c5ea0b11eb141cb88c6e5b0
