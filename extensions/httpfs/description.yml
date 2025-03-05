@@ -1,0 +1,13 @@
+extension:
+  name: httpfs
+  description: httpfs extension for DuckDB
+  version: 0.0.1
+  language: C++
+  build: cmake
+  license: MIT
+  maintainers:
+    - duckdb
+
+repo:
+  github: duckdb/duckdb-httpfs
+  ref: 85ac4667bcb0d868199e156f8dd918b0278db7b9
