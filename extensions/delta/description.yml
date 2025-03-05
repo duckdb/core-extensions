@@ -1,0 +1,14 @@
+extension:
+  name: delta
+  description: Delta extension for DuckDB
+  version: 0.0.1
+  language: C++
+  build: cmake
+  license: MIT
+  excluded_platforms: "wasm_mvp;wasm_eh;wasm_threads;windows_amd64_rtools;windows_amd64_mingw;linux_amd64_musl"
+  maintainers:
+    - duckdb
+
+repo:
+  github: duckdb/duckdb-delta
+  ref: 6d626173e9efa6615c25eb08d979d1372100d5db
