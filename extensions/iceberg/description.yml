@@ -1,0 +1,13 @@
+extension:
+  name: iceberg
+  description: Iceberg extension for DuckDB
+  version: 0.0.1
+  language: C++
+  build: cmake
+  license: MIT
+  maintainers:
+    - duckdb
+
+repo:
+  github: duckdb/duckdb-iceberg
+  ref: e9d64c84bad27915a9e7749fb15aae95347f81dd
