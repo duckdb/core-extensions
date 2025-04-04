@@ -10,4 +10,4 @@ extension:
 
 repo:
   github: duckdb/duckdb-vss
-  ref: 580e8918eb89f478cf2d233ca908ffbd3ec752c5
+  ref: ba199a7215b75e83821ece13f6b921ccfcebd6ac
