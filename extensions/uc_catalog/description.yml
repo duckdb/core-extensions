@@ -1,0 +1,17 @@
+extension:
+  name: uc_catalog
+  description: Experimental Unity Catalog extension for DuckDB
+  version: 0.0.1
+  language: C++
+  build: cmake
+  license: MIT
+  excluded_platforms: "wasm_mvp;wasm_eh;wasm_threads;windows_amd64_rtools;windows_amd64;linux_arm64"
+  maintainers:
+    - duckdb
+
+repo:
+  github: duckdb/uc_catalog
+  ref: 1d89e1094a9fdcacfdfbe930e2e809370b5aa096
+
+
+
