@@ -1,0 +1,13 @@
+extension:
+  name: avro
+  description: Avro extension for DuckDB
+  version: 0.0.1
+  language: C++
+  build: cmake
+  license: MIT
+  maintainers:
+    - duckdb
+
+repo:
+  github: duckdb/duckdb-avro
+  ref: ff766174cc6cc9c4ed93fc4b75871bcdffcc6e65
