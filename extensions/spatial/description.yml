@@ -10,4 +10,4 @@ extension:
 
 repo:
   github: duckdb/duckdb-spatial
-  ref: 95ed129e22bf9b14f64c8d0bd8fd55f9ca0a9e61
+  ref: 7ab1710c125f25208c7382560c7cb313a967eb2c
