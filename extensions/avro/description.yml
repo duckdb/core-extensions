@@ -10,4 +10,4 @@ extension:
 
 repo:
   github: duckdb/duckdb-avro
-  ref: 1b53c8af9973b0267406ca5a24d7e0b52f22cec3
+  ref: 5596eafcff279437df151a0805494d5b6637b261
