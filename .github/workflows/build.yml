@@ -61,7 +61,7 @@ jobs:
       DUCKDB_VERSION: ${{ inputs.duckdb_version || 'v1.3.0' }}
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         fetch-depth: 0
 
@@ -81,8 +81,8 @@ jobs:
         pip install pyyaml
         # scripts/build.py takes DUCKDB_VERSION from environment
         python scripts/build.py
-        cat env.sh >> $GITHUB_OUTPUT
-        echo `cat $GITHUB_OUTPUT`
+        cat env.sh >> "$GITHUB_OUTPUT"
+        cat "$GITHUB_OUTPUT"
 
   build:
     needs: prepare

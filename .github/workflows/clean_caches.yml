@@ -22,7 +22,7 @@ jobs:
     name: Clean Caches
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
 
       - name: Deploy
         shell: bash
@@ -35,4 +35,3 @@ jobs:
           DUCKDB_CLEAN_CACHES_SCRIPT_MODE: for_real
         run: |
           bash ./scripts/clean_caches.sh duckdb-extensions core-extensions "$PATTERN"
-

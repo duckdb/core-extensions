@@ -13,7 +13,7 @@ jobs:
       CORE_EXTENSION_LIST: ${{ steps.generate_list.outputs.EXTENSION_LIST }}
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         fetch-depth: 0
 
@@ -22,7 +22,7 @@ jobs:
       run: |
         ./scripts/get_extension_list.sh
         cat extension_list
-        cat extension_list >> $GITHUB_OUTPUT
+        cat extension_list >> "$GITHUB_OUTPUT"
       
   test_all:
     needs:

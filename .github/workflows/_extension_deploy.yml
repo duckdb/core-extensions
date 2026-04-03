@@ -63,14 +63,14 @@ jobs:
     outputs:
       deploy_matrix: ${{ steps.parse-matrices.outputs.deploy_matrix }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
         with:
           repository: ${{ inputs.repository }}
           ref: ${{ inputs.ref }}
           fetch-depth: 0
           submodules: 'true'
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
         with:
           repository: 'duckdb/duckdb'
           ref: ${{ inputs.duckdb_version }}
@@ -80,9 +80,12 @@ jobs:
       - id: parse-matrices
         run: |
           python3 ${{ inputs.matrix_parse_script }} --input ./duckdb/.github/config/distribution_matrix.json --deploy_matrix --output deploy_matrix.json --exclude "${{ inputs.exclude_archs }}" --pretty
-          deploy_matrix="`cat deploy_matrix.json`"
-          echo deploy_matrix=$deploy_matrix >> $GITHUB_OUTPUT
-          echo `cat $GITHUB_OUTPUT`
+          {
+            echo "deploy_matrix<<EOF"
+            cat deploy_matrix.json
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+          cat "$GITHUB_OUTPUT"
 
   deploy:
     name: Deploy
@@ -93,14 +96,14 @@ jobs:
       matrix: ${{fromJson(needs.generate_matrix.outputs.deploy_matrix)}}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
         with:
           repository: ${{ inputs.repository }}
           ref: ${{ inputs.ref }}
           fetch-depth: 0
           submodules: 'false'
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
         with:
           repository: 'duckdb/duckdb'
           ref: ${{ inputs.duckdb_version }}
@@ -129,13 +132,15 @@ jobs:
           git config --global --add safe.directory '*'
           cd duckdb
           git fetch --tags
-          export DUCKDB_VERSION=`git tag --points-at HEAD`
-          export DUCKDB_VERSION=${DUCKDB_VERSION:=`git log -1 --format=%h`}
+          duckdb_version="$(git tag --points-at HEAD)"
+          DUCKDB_VERSION="${duckdb_version:-$(git log -1 --format=%h)}"
+          export DUCKDB_VERSION
           cd ..
           git fetch --tags
-          export EXT_VERSION=`git tag --points-at HEAD`
-          export EXT_VERSION=${EXT_VERSION:=`git log -1 --format=%h`}
-          echo ${{ inputs.deploy_script }} ${{ inputs.extension_name }} $EXT_VERSION $DUCKDB_VERSION ${{ matrix.duckdb_arch }} $BUCKET_NAME ${{inputs.deploy_latest || 'true' && 'false'}} ${{inputs.deploy_versioned || 'true' && 'false'}}
+          ext_version="$(git tag --points-at HEAD)"
+          EXT_VERSION="${ext_version:-$(git log -1 --format=%h)}"
+          export EXT_VERSION
+          echo "${{ inputs.deploy_script }} ${{ inputs.extension_name }} $EXT_VERSION $DUCKDB_VERSION ${{ matrix.duckdb_arch }} $BUCKET_NAME ${{inputs.deploy_latest || 'true' && 'false'}} ${{inputs.deploy_versioned || 'true' && 'false'}}"
 
   clean_cache:
     needs:

@@ -15,8 +15,8 @@ on:
 
 jobs:
   test_against_latest:
-    if: false
+    if: ${{ vars.ENABLE_BUILD_NEXT == 'true' }}
     uses: ./.github/workflows/build.yml 
     with:
       duckdb_version: 'main'
-      deploy: 'false'
+      deploy: ${{ 'false' }}
