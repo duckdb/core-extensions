@@ -1,3 +1,7 @@
+#
+# Builds (and optionally deploys) a single core extension from its extensions/<name>/description.yml, using the
+# build.yml and deploy.yml reusable workflows from duckdb/extension-ci-tools
+#
 name: Core Extension Build
 on:
   pull_request:
@@ -15,14 +19,26 @@ on:
   workflow_dispatch:
     inputs:
       extension_name:
+        description: 'Extension to build (name of the folder in extensions/)'
         type: string
       duckdb_version:
+        description: 'DuckDB version to build against (default: latest stable)'
         type: string
-      duckdb_tag:
+      duckdb_commit:
+        description: 'Exact DuckDB commit to build against (default: the commit duckdb_version points at)'
+        type: string
+      extension_repository:
+        description: 'Override the extension repository from description.yml (e.g. duckdb/duckdb-httpfs)'
+        type: string
+      extension_version:
+        description: 'Override the extension ref from description.yml (tag, branch or commit)'
+        type: string
+      platform:
+        description: 'Platform to build (e.g. linux_amd64)'
+        required: true
         type: string
       deploy:
-        type: string
-      more_excluded:
+        description: "Set to 'false' to skip deployment"
         type: string
       skip_tests:
         required: false
@@ -34,11 +50,15 @@ on:
         type: string
       duckdb_version:
         type: string
-      duckdb_tag:
+      duckdb_commit:
+        type: string
+      extension_repository:
+        type: string
+      extension_version:
+        type: string
+      platform:
         type: string
       deploy:
-        type: string
-      more_excluded:
         type: string
       skip_tests:
         required: false
@@ -52,10 +72,12 @@ jobs:
       COMMUNITY_EXTENSION_GITHUB: ${{ steps.parse.outputs.COMMUNITY_EXTENSION_GITHUB }}
       COMMUNITY_EXTENSION_REF: ${{ steps.parse.outputs.COMMUNITY_EXTENSION_REF }}
       COMMUNITY_EXTENSION_DEPLOY: ${{ steps.parse.outputs.COMMUNITY_EXTENSION_DEPLOY }}
-      COMMUNITY_EXTENSION_EXCLUDE_PLATFORMS: ${{ inputs.more_excluded }}${{ steps.parse.outputs.COMMUNITY_EXTENSION_EXCLUDE_PLATFORMS }}
-      COMMUNITY_EXTENSION_REQUIRES_TOOLCHAINS: ${{ steps.parse.outputs.COMMUNITY_EXTENSION_REQUIRES_TOOLCHAINS }}
+      COMMUNITY_EXTENSION_EXCLUDE_PLATFORMS: ${{ steps.parse.outputs.COMMUNITY_EXTENSION_EXCLUDE_PLATFORMS }}
+      COMMUNITY_EXTENSION_OPT_IN_PLATFORMS: ${{ steps.parse.outputs.COMMUNITY_EXTENSION_OPT_IN_PLATFORMS }}
+      COMMUNITY_EXTENSION_GROUPS: ${{ steps.parse.outputs.COMMUNITY_EXTENSION_GROUPS }}
       COMMUNITY_EXTENSION_VCPKG_URL: ${{ steps.parse.outputs.COMMUNITY_EXTENSION_VCPKG_URL == '' && 'https://github.com/microsoft/vcpkg.git' || steps.parse.outputs.COMMUNITY_EXTENSION_VCPKG_URL }}
       COMMUNITY_EXTENSION_VCPKG_COMMIT: ${{ steps.parse.outputs.COMMUNITY_EXTENSION_VCPKG_COMMIT == '' && 'ce613c41372b23b1f51333815feb3edd87ef8a8b' || steps.parse.outputs.COMMUNITY_EXTENSION_VCPKG_COMMIT }}
+      runners: ${{ steps.runners.outputs.runners }}
     env:
       DUCKDB_LATEST_STABLE: 'v1.3.0'
       DUCKDB_VERSION: ${{ inputs.duckdb_version || 'v1.3.0' }}
@@ -64,6 +86,10 @@ jobs:
     - uses: actions/checkout@v6
       with:
         fetch-depth: 0
+
+    - name: Detect runners
+      id: runners
+      uses: duckdb/duckdb-ci/detect-runners@main
 
     - name: Get all changed description files
       id: changed-files
@@ -76,51 +102,51 @@ jobs:
       id: parse
       env:
         ALL_CHANGED_FILES: ${{ github.event_name == 'workflow_dispatch' && format('extensions/{0}/description.yml', inputs.extension_name) || steps.changed-files.outputs.all_changed_files }}
+        EXTENSION_REPOSITORY: ${{ inputs.extension_repository }}
+        EXTENSION_VERSION: ${{ inputs.extension_version }}
+        PLATFORM: ${{ inputs.platform }}
         PIP_BREAK_SYSTEM_PACKAGES: 1
       run: |
         pip install pyyaml
-        # scripts/build.py takes DUCKDB_VERSION from environment
+        # scripts/build.py takes DUCKDB_VERSION, EXTENSION_REPOSITORY, EXTENSION_VERSION and PLATFORM from environment
         python scripts/build.py
         cat env.sh >> "$GITHUB_OUTPUT"
         cat "$GITHUB_OUTPUT"
 
   build:
+    name: Build extension
     needs: prepare
-    uses: duckdb/extension-ci-tools/.github/workflows/_extension_distribution.yml@main
+    uses: duckdb/extension-ci-tools/.github/workflows/build.yml@main
     if: ${{ needs.prepare.outputs.COMMUNITY_EXTENSION_NAME != '' }}
+    secrets: inherit
     with:
       duckdb_version: ${{ inputs.duckdb_version || 'v1.3.0' }}
-      duckdb_tag: ${{ inputs.duckdb_tag || '' }}
+      duckdb_commit: ${{ inputs.duckdb_commit }}
       ci_tools_version: 'main'
+      groups: ${{ needs.prepare.outputs.COMMUNITY_EXTENSION_GROUPS }}
+      extension_repository: ${{ needs.prepare.outputs.COMMUNITY_EXTENSION_GITHUB }}
+      extension_ref: ${{ needs.prepare.outputs.COMMUNITY_EXTENSION_REF }}
       exclude_archs: ${{ needs.prepare.outputs.COMMUNITY_EXTENSION_EXCLUDE_PLATFORMS }}
-      extra_toolchains: ${{ needs.prepare.outputs.COMMUNITY_EXTENSION_REQUIRES_TOOLCHAINS }}
-      extension_name: ${{ needs.prepare.outputs.COMMUNITY_EXTENSION_NAME }}
-      override_repository: ${{ needs.prepare.outputs.COMMUNITY_EXTENSION_GITHUB }}
-      override_ref: ${{ needs.prepare.outputs.COMMUNITY_EXTENSION_REF }}
-      vcpkg_url: ${{ needs.prepare.outputs.COMMUNITY_EXTENSION_VCPKG_URL}}
-      vcpkg_commit: ${{ needs.prepare.outputs.COMMUNITY_EXTENSION_VCPKG_COMMIT}}
+      opt_in_archs: ${{ needs.prepare.outputs.COMMUNITY_EXTENSION_OPT_IN_PLATFORMS }}
+      runners: ${{ needs.prepare.outputs.runners }}
+      vcpkg_url: ${{ needs.prepare.outputs.COMMUNITY_EXTENSION_VCPKG_URL }}
+      vcpkg_commit: ${{ needs.prepare.outputs.COMMUNITY_EXTENSION_VCPKG_COMMIT }}
       skip_tests: ${{ inputs.skip_tests || false }}
 
-  doc_test:
-    if: ${{ inputs.deploy != 'false' }}
+  deploy:
+    name: Deploy extension
     needs:
       - prepare
       - build
-    uses: ./.github/workflows/generate_docs.yml
-    with:
-      extension_name: ${{ needs.prepare.outputs.COMMUNITY_EXTENSION_NAME }}
-
-  deploy:
-    needs: 
-      - prepare
-      - build
-    uses: ./.github/workflows/_extension_deploy.yml
-    if: ${{ needs.prepare.outputs.COMMUNITY_EXTENSION_DEPLOY != '' }}
+    uses: duckdb/extension-ci-tools/.github/workflows/deploy.yml@main
+    if: ${{ needs.prepare.outputs.COMMUNITY_EXTENSION_DEPLOY != '' && inputs.deploy != 'false' }}
     secrets: inherit
     with:
+      duckdb_version: ${{ needs.build.outputs.duckdb_version }}
+      duckdb_commit: ${{ needs.build.outputs.duckdb_commit }}
+      ci_tools_version: 'main'
+      extension_repository: ${{ needs.prepare.outputs.COMMUNITY_EXTENSION_GITHUB }}
+      extension_ref: ${{ needs.prepare.outputs.COMMUNITY_EXTENSION_REF }}
+      deploy_extensions: ${{ needs.prepare.outputs.COMMUNITY_EXTENSION_NAME }}
       deploy_latest: true
-      duckdb_version: ${{ inputs.duckdb_version || 'v1.3.0' }}
-      exclude_archs: ${{ needs.prepare.outputs.COMMUNITY_EXTENSION_EXCLUDE_PLATFORMS }}
-      extension_name: ${{ needs.prepare.outputs.COMMUNITY_EXTENSION_NAME }}
-      repository: ${{ needs.prepare.outputs.COMMUNITY_EXTENSION_GITHUB }}
-      ref: ${{ needs.prepare.outputs.COMMUNITY_EXTENSION_REF }}
+      deploy_versioned: true

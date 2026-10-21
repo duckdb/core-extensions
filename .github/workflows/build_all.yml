@@ -4,7 +4,7 @@ on:
     inputs:
       duckdb_version:
         type: string
-      duckdb_tag:
+      duckdb_commit:
         type: string
       deploy:
         type: string
@@ -38,5 +38,5 @@ jobs:
     with:
       extension_name: ${{ matrix.extension_name }}
       duckdb_version: ${{ inputs.duckdb_version }}
-      duckdb_tag: ${{ inputs.duckdb_tag }}
+      duckdb_commit: ${{ inputs.duckdb_commit }}
       deploy: ${{ inputs.deploy }}
