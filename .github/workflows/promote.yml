@@ -1,0 +1,89 @@
+#
+# Copies already deployed extensions inside the nightly bucket from one DuckDB version path to another, e.g.
+#   <bucket>/d54cbbe3df1/**  ->  <bucket>/v2.0.0/**
+# optionally restricted to a single platform and/or extension.
+#
+# This is a server-side copy: the extension binaries (and their signatures) are not modified.
+#
+name: Promote Nightly Extensions
+on:
+  workflow_dispatch:
+    inputs:
+      source_version:
+        description: 'DuckDB version path to copy from (e.g. d54cbbe3df1)'
+        required: true
+        type: string
+      target_version:
+        description: 'DuckDB version path to copy to (e.g. v2.0.0)'
+        required: true
+        type: string
+      platform:
+        description: 'Only copy this platform (e.g. osx_arm64); empty copies all platforms'
+        required: false
+        type: string
+      extension_name:
+        description: 'Only copy this extension (e.g. vortex); empty copies all extensions'
+        required: false
+        type: string
+      dry_run:
+        description: 'Only show what would be copied'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  promote:
+    name: Promote ${{ inputs.source_version }} -> ${{ inputs.target_version }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install rclone
+        run: |
+          curl -fsSL --retry 5 https://rclone.org/install.sh | sudo bash
+
+      - name: Copy extensions
+        shell: bash
+        env:
+          AWS_ENDPOINT_URL: ${{ secrets.DUCKDB_EXTENSIONS_NIGHTLY_S3_ENDPOINT }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.DUCKDB_EXTENSIONS_NIGHTLY_S3_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.DUCKDB_EXTENSIONS_NIGHTLY_S3_KEY }}
+          BUCKET_NAME: duckdb-extensions-nightly
+          SOURCE_VERSION: ${{ inputs.source_version }}
+          TARGET_VERSION: ${{ inputs.target_version }}
+          PLATFORM: ${{ inputs.platform }}
+          EXTENSION_NAME: ${{ inputs.extension_name }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          set -euo pipefail
+          if [ -z "$AWS_ACCESS_KEY_ID" ] || [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
+            echo "Missing DUCKDB_EXTENSIONS_NIGHTLY_S3_ID / DUCKDB_EXTENSIONS_NIGHTLY_S3_KEY secrets"
+            exit 1
+          fi
+          if [ -z "$SOURCE_VERSION" ] || [ -z "$TARGET_VERSION" ] || [ "$SOURCE_VERSION" == "$TARGET_VERSION" ]; then
+            echo "source_version and target_version must be set and different"
+            exit 1
+          fi
+
+          s3_provider="AWS"
+          if [[ "$AWS_ENDPOINT_URL" == *"r2.cloudflarestorage.com"* ]]; then
+            s3_provider="Cloudflare"
+          fi
+          remote=":s3,env_auth=true,provider=$s3_provider,endpoint=$AWS_ENDPOINT_URL,no_check_bucket=true:"
+          source="$BUCKET_NAME/$SOURCE_VERSION"
+          target="$BUCKET_NAME/$TARGET_VERSION"
+
+          # layout is <version>/<platform>/<extension>.duckdb_extension.<gz|wasm>
+          # (same as duckdb/scripts/extension-upload-single.sh)
+          filter=(--include "${PLATFORM:-*}/${EXTENSION_NAME:-*}.duckdb_extension.*")
+          dry_run=()
+          if [ "$DRY_RUN" == "true" ]; then
+            dry_run=(--dry-run)
+          fi
+
+          echo "Source: $source"
+          rclone lsl "${filter[@]}" "$remote$source"
+          echo "Target: $target"
+          set -x
+          rclone copy --ignore-times -v "${dry_run[@]}" "${filter[@]}" "$remote$source" "$remote$target"
+          set +x
+          echo "Now at target:"
+          rclone lsl "${filter[@]}" "$remote$target"
