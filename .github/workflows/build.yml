@@ -76,7 +76,7 @@ jobs:
       COMMUNITY_EXTENSION_OPT_IN_PLATFORMS: ${{ steps.parse.outputs.COMMUNITY_EXTENSION_OPT_IN_PLATFORMS }}
       COMMUNITY_EXTENSION_GROUPS: ${{ steps.parse.outputs.COMMUNITY_EXTENSION_GROUPS }}
       COMMUNITY_EXTENSION_VCPKG_URL: ${{ steps.parse.outputs.COMMUNITY_EXTENSION_VCPKG_URL == '' && 'https://github.com/microsoft/vcpkg.git' || steps.parse.outputs.COMMUNITY_EXTENSION_VCPKG_URL }}
-      COMMUNITY_EXTENSION_VCPKG_COMMIT: ${{ steps.parse.outputs.COMMUNITY_EXTENSION_VCPKG_COMMIT == '' && 'ce613c41372b23b1f51333815feb3edd87ef8a8b' || steps.parse.outputs.COMMUNITY_EXTENSION_VCPKG_COMMIT }}
+      COMMUNITY_EXTENSION_VCPKG_COMMIT: ${{ steps.parse.outputs.COMMUNITY_EXTENSION_VCPKG_COMMIT == '' && 'cd61e1e26a038e82d6550a3ebbe0fbbfe7da78e3' || steps.parse.outputs.COMMUNITY_EXTENSION_VCPKG_COMMIT }}
       runners: ${{ steps.runners.outputs.runners }}
     env:
       DUCKDB_LATEST_STABLE: 'v1.3.0'
