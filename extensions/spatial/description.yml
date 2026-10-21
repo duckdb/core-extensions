@@ -5,9 +5,10 @@ extension:
   language: C++
   build: cmake
   license: MIT
+  excluded_platforms: "wasm_mvp;wasm_eh;wasm_threads"
   maintainers:
     - duckdb
 
 repo:
   github: duckdb/duckdb-spatial
-  ref: bef22c4b109d235c2b5725ff9ccf191485d14fd8
+  ref: a3dbcd1781ec26c3a1be9bd622be05b376d6f47a

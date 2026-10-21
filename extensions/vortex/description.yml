@@ -1,0 +1,15 @@
+extension:
+  name: vortex
+  description: vortex extension for DuckDB
+  version: 0.0.1
+  language: C++
+  build: cmake
+  license: MIT
+  requires_toolchains: "rust"
+  excluded_platforms: "wasm_mvp;wasm_eh;wasm_threads;linux_amd64_musl;linux_arm64_musl;windows_amd64;windows_amd64_mingw;windows_arm64"
+  maintainers:
+    - duckdb
+
+repo:
+  github: vortex-data/duckdb-vortex
+  ref: f56da1b2736ff2032db5c09a540303408c93f195

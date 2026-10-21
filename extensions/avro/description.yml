@@ -5,9 +5,10 @@ extension:
   language: C++
   build: cmake
   license: MIT
+  excluded_platforms: "windows_amd64_mingw"
   maintainers:
     - duckdb
 
 repo:
   github: duckdb/duckdb-avro
-  ref: 5596eafcff279437df151a0805494d5b6637b261
+  ref: 345c3f4e821940233b0b889e815582e5a5a33dfe

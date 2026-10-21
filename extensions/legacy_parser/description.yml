@@ -1,0 +1,13 @@
+extension:
+  name: legacy_parser
+  description: legacy_parser extension for DuckDB
+  version: 0.0.1
+  language: C++
+  build: cmake
+  license: MIT
+  maintainers:
+    - duckdb
+
+repo:
+  github: duckdb/duckdb-legacy-parser
+  ref: bcdf276132fe3a09afcc707c1cdff39096989404

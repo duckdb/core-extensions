@@ -1,0 +1,13 @@
+extension:
+  name: inet
+  description: inet extension for DuckDB
+  version: 0.0.1
+  language: C++
+  build: cmake
+  license: MIT
+  maintainers:
+    - duckdb
+
+repo:
+  github: duckdb/duckdb-inet
+  ref: fe7f60bb60245197680fb07ecd1629a1dc3d91c8

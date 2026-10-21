@@ -1,0 +1,15 @@
+extension:
+  name: lance
+  description: lance extension for DuckDB
+  version: 0.0.1
+  language: C++
+  build: cmake
+  license: MIT
+  requires_toolchains: "rust"
+  excluded_platforms: "windows_amd64_mingw;wasm_mvp;wasm_eh;wasm_threads"
+  maintainers:
+    - duckdb
+
+repo:
+  github: lance-format/lance-duckdb
+  ref: 86118537da79138e6ec5c7358f2384c7ae650ab0

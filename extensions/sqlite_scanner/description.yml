@@ -1,0 +1,13 @@
+extension:
+  name: sqlite_scanner
+  description: sqlite_scanner extension for DuckDB
+  version: 0.0.1
+  language: C++
+  build: cmake
+  license: MIT
+  maintainers:
+    - duckdb
+
+repo:
+  github: duckdb/duckdb-sqlite
+  ref: e223dc01493414cef6d5960744f1e048d59fc592

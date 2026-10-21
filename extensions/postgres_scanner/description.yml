@@ -1,0 +1,14 @@
+extension:
+  name: postgres_scanner
+  description: postgres_scanner extension for DuckDB
+  version: 0.0.1
+  language: C++
+  build: cmake
+  license: MIT
+  excluded_platforms: "windows_amd64_mingw;wasm_mvp;wasm_eh;wasm_threads"
+  maintainers:
+    - duckdb
+
+repo:
+  github: duckdb/duckdb-postgres
+  ref: c0f5a3c0c4b68b02afbf669d36d7f0e503985c88

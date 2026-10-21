@@ -5,10 +5,10 @@ extension:
   language: C++
   build: cmake
   license: MIT
-  excluded_platforms: "wasm_mvp;wasm_eh;wasm_threads;windows_amd64_rtools;windows_amd64_mingw;linux_amd64_musl"
+  excluded_platforms: "windows_amd64_mingw"
   maintainers:
     - duckdb
 
 repo:
   github: duckdb/duckdb-iceberg
-  ref: e9d64c84bad27915a9e7749fb15aae95347f81dd
+  ref: 4c0c0874c48ec82a3e29910554891d04bcc0e988

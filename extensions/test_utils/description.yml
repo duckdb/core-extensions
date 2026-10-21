@@ -1,0 +1,13 @@
+extension:
+  name: test_utils
+  description: test_utils extension for DuckDB
+  version: 0.0.1
+  language: C++
+  build: cmake
+  license: MIT
+  maintainers:
+    - duckdb
+
+repo:
+  github: duckdb/bwc-test-utils
+  ref: b7bef9e85c190a090c11b3a58b419a8487465083

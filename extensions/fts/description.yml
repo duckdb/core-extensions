@@ -1,0 +1,13 @@
+extension:
+  name: fts
+  description: fts extension for DuckDB
+  version: 0.0.1
+  language: C++
+  build: cmake
+  license: MIT
+  maintainers:
+    - duckdb
+
+repo:
+  github: duckdb/duckdb-fts
+  ref: 2266e67d01c737cb65114e77c7c672e58869a635

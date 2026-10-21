@@ -10,4 +10,4 @@ extension:
 
 repo:
   github: duckdb/duckdb-httpfs
-  ref: 85ac4667bcb0d868199e156f8dd918b0278db7b9
+  ref: 77392a72077a85897db2519fae11e2c0da972b8a

@@ -1,0 +1,14 @@
+extension:
+  name: mysql_scanner
+  description: mysql_scanner extension for DuckDB
+  version: 0.0.1
+  language: C++
+  build: cmake
+  license: MIT
+  excluded_platforms: "windows_amd64_mingw;wasm_mvp;wasm_eh;wasm_threads"
+  maintainers:
+    - duckdb
+
+repo:
+  github: duckdb/duckdb-mysql
+  ref: f7fc0d42716534aa5ad48626d21ced9807b33967

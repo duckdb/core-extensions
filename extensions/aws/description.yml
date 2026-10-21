@@ -5,10 +5,10 @@ extension:
   language: C++
   build: cmake
   license: MIT
-  excluded_platforms: "wasm_mvp;wasm_eh;wasm_threads;windows_amd64_rtools;windows_amd64_mingw"
+  excluded_platforms: "windows_amd64_mingw;wasm_mvp;wasm_eh;wasm_threads"
   maintainers:
     - duckdb
 
 repo:
   github: duckdb/duckdb-aws
-  ref: b73faadeaa4d2c880deb949771baf570f42fe8cc
+  ref: 16ae9c135300f750478d648c2496f2952a6f2827

@@ -1,0 +1,14 @@
+extension:
+  name: azure
+  description: azure extension for DuckDB
+  version: 0.0.1
+  language: C++
+  build: cmake
+  license: MIT
+  excluded_platforms: "windows_amd64_mingw;wasm_mvp;wasm_eh;wasm_threads"
+  maintainers:
+    - duckdb
+
+repo:
+  github: duckdb/duckdb-azure
+  ref: 906e92458c33309e5d9413e14a85aad7b4d2275f
