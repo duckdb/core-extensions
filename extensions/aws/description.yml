@@ -11,4 +11,4 @@ extension:
 
 repo:
   github: duckdb/duckdb-aws
-  ref: 16ae9c135300f750478d648c2496f2952a6f2827
+  ref: 9ba41b09a010322008f160af0dfce93941d6f52a
